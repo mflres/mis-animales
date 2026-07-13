@@ -105,6 +105,13 @@
   }
   input.search::placeholder{color:var(--muted)}
   input.search:focus{outline:3px solid var(--accent-soft); border-color:var(--accent)}
+  input.search{padding-right:62px}
+  .search-wrap .limpiar{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:50%; border:none;
+    background:var(--surface-2); color:var(--muted); font-size:18px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
 
   .chips{display:flex; gap:10px; overflow-x:auto; padding:2px 2px 14px; -webkit-overflow-scrolling:touch}
   .chip{
@@ -625,8 +632,10 @@ function vistaLista(){
     </header>
     <div class="search-wrap">
       <span class="lupa" aria-hidden="true">🔍</span>
-      <input class="search" type="text" placeholder="Buscar por nombre o arete…"
+      <input class="search" type="text" placeholder="Buscar por nombre o arete…" enterkeyhint="search"
         value="${esc(estado.busqueda)}" oninput="setBusqueda(this.value)" aria-label="Buscar animal">
+      <button class="limpiar" id="btn-limpiar" style="display:${estado.busqueda ? "flex" : "none"}"
+        onclick="limpiarBusqueda()" aria-label="Borrar búsqueda y cerrar teclado">✕</button>
     </div>
     <div id="zona-resultados">${zonaResultados()}</div>
     <div class="fab-bar">
@@ -711,8 +720,15 @@ function cardAnimal(a){
 }
 function setBusqueda(v){
   estado.busqueda = v;
+  const btn = $("#btn-limpiar");
+  if(btn) btn.style.display = v ? "flex" : "none";
   const z = $("#zona-resultados");
   if(z) z.innerHTML = zonaResultados();
+}
+function limpiarBusqueda(){
+  const inp = $("input.search");
+  if(inp){ inp.value = ""; inp.blur(); }
+  setBusqueda("");
 }
 function setFiltro(f){
   estado.filtro = f;
@@ -722,8 +738,16 @@ function setFiltro(f){
 
 /* ---------- Formulario ---------- */
 function abrirNuevo(){
-  estado.fotoTemp = null; estado.sexoTemp = ""; estado.formDraft = null;
+  // la especie inicial es Vaca, así que el sexo arranca en Hembra
+  estado.fotoTemp = null; estado.sexoTemp = "hembra"; estado.formDraft = null;
   irA("form", {editId:null});
+}
+/* Vaca → hembra, Toro → macho, automáticamente */
+function cambioEspecie(v){
+  estado.formDraft = {...(estado.formDraft||{}), ...leerForm()};
+  if(v === "vaca") estado.sexoTemp = "hembra";
+  if(v === "toro") estado.sexoTemp = "macho";
+  render();
 }
 function abrirEditar(id){
   const a = animales.find(x=>x.id===id);
@@ -759,7 +783,7 @@ function vistaForm(){
         </div>
         <div class="field">
           <label for="f-especie">Tipo de animal</label>
-          <select id="f-especie">
+          <select id="f-especie" onchange="cambioEspecie(this.value)">
             ${ESPECIES.map(e=>`<option value="${e.id}" ${d.especie===e.id?"selected":""}>${e.icono} ${e.nombre}</option>`).join("")}
           </select>
         </div>
@@ -1077,6 +1101,17 @@ document.getElementById("inputImportar").addEventListener("change", e=>{
   if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   }
+  // El teclado del iPad se guarda al deslizar la pantalla o al tocar Intro
+  window.addEventListener("touchmove", () => {
+    const a = document.activeElement;
+    if(a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA")) a.blur();
+  }, {passive:true});
+  document.addEventListener("keydown", e => {
+    if(e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type === "text"){
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
   try{
     if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
     await abrirDB();
