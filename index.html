@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mis Animales — Registro del rancho</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E5E3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mis Animales">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<style>
+  :root{
+    --bg:#F3F3EC;
+    --surface:#FFFFFF;
+    --surface-2:#E9EADF;
+    --ink:#232820;
+    --muted:#68705F;
+    --line:#D8DACB;
+    --accent:#2E5E3A;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#DEEAE0;
+    --ochre:#B4762B;
+    --ochre-soft:#F3E6D2;
+    --danger:#A33B2E;
+    --danger-soft:#F5DFDB;
+    --ev-vacuna:#2B5D8A;   --ev-vacuna-soft:#DCE8F2;
+    --ev-despar:#6B4E9B;   --ev-despar-soft:#E8E1F3;
+    --ev-trat:#A33B2E;     --ev-trat-soft:#F5DFDB;
+    --ev-peso:#B4762B;     --ev-peso-soft:#F3E6D2;
+    --ev-parto:#2E5E3A;    --ev-parto-soft:#DEEAE0;
+    --ev-nota:#68705F;     --ev-nota-soft:#E9EADF;
+    --shadow:0 2px 10px rgba(35,40,32,.10);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16190F; --surface:#22261B; --surface-2:#2C3123;
+      --ink:#EDEFE3; --muted:#A8AF9A; --line:#3B4130;
+      --accent:#86B58F; --accent-ink:#14211A; --accent-soft:#2A3A2E;
+      --ochre:#D9A254; --ochre-soft:#3A3020;
+      --danger:#E0796B; --danger-soft:#3E2723;
+      --ev-vacuna:#7FAAD1; --ev-vacuna-soft:#243240;
+      --ev-despar:#A98FD6; --ev-despar-soft:#322A42;
+      --ev-trat:#E0796B;   --ev-trat-soft:#3E2723;
+      --ev-peso:#D9A254;   --ev-peso-soft:#3A3020;
+      --ev-parto:#8FBF98;  --ev-parto-soft:#26342A;
+      --ev-nota:#A8AF9A;   --ev-nota-soft:#2C3123;
+      --shadow:0 2px 12px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#F3F3EC; --surface:#FFFFFF; --surface-2:#E9EADF;
+    --ink:#232820; --muted:#68705F; --line:#D8DACB;
+    --accent:#2E5E3A; --accent-ink:#FFFFFF; --accent-soft:#DEEAE0;
+    --ochre:#B4762B; --ochre-soft:#F3E6D2;
+    --danger:#A33B2E; --danger-soft:#F5DFDB;
+    --ev-vacuna:#2B5D8A; --ev-vacuna-soft:#DCE8F2;
+    --ev-despar:#6B4E9B; --ev-despar-soft:#E8E1F3;
+    --ev-trat:#A33B2E;   --ev-trat-soft:#F5DFDB;
+    --ev-peso:#B4762B;   --ev-peso-soft:#F3E6D2;
+    --ev-parto:#2E5E3A;  --ev-parto-soft:#DEEAE0;
+    --ev-nota:#68705F;   --ev-nota-soft:#E9EADF;
+    --shadow:0 2px 10px rgba(35,40,32,.10);
+  }
+  :root[data-theme="dark"]{
+    --bg:#16190F; --surface:#22261B; --surface-2:#2C3123;
+    --ink:#EDEFE3; --muted:#A8AF9A; --line:#3B4130;
+    --accent:#86B58F; --accent-ink:#14211A; --accent-soft:#2A3A2E;
+    --ochre:#D9A254; --ochre-soft:#3A3020;
+    --danger:#E0796B; --danger-soft:#3E2723;
+    --ev-vacuna:#7FAAD1; --ev-vacuna-soft:#243240;
+    --ev-despar:#A98FD6; --ev-despar-soft:#322A42;
+    --ev-trat:#E0796B;   --ev-trat-soft:#3E2723;
+    --ev-peso:#D9A254;   --ev-peso-soft:#3A3020;
+    --ev-parto:#8FBF98;  --ev-parto-soft:#26342A;
+    --ev-nota:#A8AF9A;   --ev-nota-soft:#2C3123;
+    --shadow:0 2px 12px rgba(0,0,0,.45);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size:18px; line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  h1,h2,h3,.display{
+    font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    text-wrap:balance; margin:0;
+  }
+  button{font:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent}
+  input,select,textarea{font:inherit; color:var(--ink)}
+  img{max-width:100%; display:block}
+
+  .app{max-width:1080px; margin:0 auto; padding:16px 20px 120px; min-height:100vh}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex; align-items:center; gap:14px;
+    padding:10px 0 18px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; flex:1; min-width:0}
+  .brand .mark{
+    width:52px; height:52px; border-radius:14px; flex:0 0 auto;
+    background:var(--accent); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; font-size:30px;
+  }
+  .brand h1{font-size:28px; font-weight:800; letter-spacing:-.01em}
+  .brand small{display:block; color:var(--muted); font-size:15px; font-weight:500; line-height:1.2}
+  .icon-btn{
+    width:56px; height:56px; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--ink); font-size:24px;
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .icon-btn:active{background:var(--surface-2)}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    min-height:56px; padding:12px 22px; border-radius:var(--radius);
+    border:none; font-size:19px; font-weight:700; width:100%;
+    font-family:ui-rounded, -apple-system, sans-serif;
+  }
+  .btn-primary{background:var(--accent); color:var(--accent-ink)}
+  .btn-primary:active{filter:brightness(1.12)}
+  .btn-secondary{background:var(--surface); color:var(--ink); border:1.5px solid var(--line)}
+  .btn-secondary:active{background:var(--surface-2)}
+  .btn-danger{background:var(--danger-soft); color:var(--danger)}
+  .btn-row{display:flex; gap:12px}
+  .btn-row .btn{flex:1}
+
+  /* ---------- Search + chips ---------- */
+  .search-wrap{position:relative; margin-bottom:14px}
+  .search-wrap .lupa{position:absolute; left:18px; top:50%; transform:translateY(-50%); font-size:20px; color:var(--muted); pointer-events:none}
+  input.search{
+    width:100%; min-height:58px; border-radius:var(--radius);
+    border:1.5px solid var(--line); background:var(--surface);
+    padding:12px 18px 12px 52px; font-size:19px;
+  }
+  input.search::placeholder{color:var(--muted)}
+  input.search:focus{outline:3px solid var(--accent-soft); border-color:var(--accent)}
+
+  .chips{display:flex; gap:10px; overflow-x:auto; padding:2px 2px 14px; -webkit-overflow-scrolling:touch}
+  .chip{
+    flex:0 0 auto; min-height:46px; padding:8px 18px; border-radius:999px;
+    border:1.5px solid var(--line); background:var(--surface); color:var(--ink);
+    font-size:17px; font-weight:600; display:flex; align-items:center; gap:8px;
+  }
+  .chip.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+
+  /* ---------- Animal grid ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px}
+  .card{
+    background:var(--surface); border-radius:var(--radius); overflow:hidden;
+    border:1.5px solid var(--line); box-shadow:var(--shadow);
+    text-align:left; padding:0; display:flex; flex-direction:column;
+  }
+  .card:active{transform:scale(.985)}
+  .card .foto{
+    aspect-ratio:4/3; width:100%; object-fit:cover; background:var(--surface-2);
+  }
+  .card .foto-placeholder{
+    aspect-ratio:4/3; width:100%; background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center; font-size:64px;
+  }
+  .card .info{padding:12px 16px 14px}
+  .card .nombre{font-size:21px; font-weight:800; font-family:ui-rounded,-apple-system,sans-serif}
+  .card .sub{color:var(--muted); font-size:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:2px}
+  .tag-arete{
+    background:var(--ochre-soft); color:var(--ochre); border-radius:8px;
+    padding:1px 8px; font-weight:700; font-size:15px; font-variant-numeric:tabular-nums;
+  }
+
+  .empty{
+    text-align:center; padding:60px 24px; color:var(--muted);
+    background:var(--surface); border:1.5px dashed var(--line); border-radius:var(--radius);
+  }
+  .empty .big{font-size:64px; margin-bottom:10px}
+  .empty h2{font-size:23px; color:var(--ink); margin-bottom:6px}
+
+  /* Floating add button */
+  .fab-bar{
+    position:fixed; left:0; right:0; bottom:0; padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--bg) 65%, transparent);
+    display:flex; justify-content:center; z-index:20;
+  }
+  .fab-bar .btn{max-width:520px; box-shadow:var(--shadow); font-size:21px; min-height:62px}
+
+  /* ---------- Forms ---------- */
+  .panel{
+    background:var(--surface); border:1.5px solid var(--line);
+    border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);
+  }
+  .field{margin-bottom:18px}
+  .field label{
+    display:block; font-weight:700; font-size:16px; margin-bottom:7px;
+    color:var(--ink); letter-spacing:.01em;
+  }
+  .field .opcional{color:var(--muted); font-weight:500}
+  .field input[type=text],.field input[type=date],.field input[type=number],
+  .field select,.field textarea{
+    width:100%; min-height:56px; border-radius:12px; border:1.5px solid var(--line);
+    background:var(--bg); padding:12px 16px; font-size:19px;
+  }
+  .field textarea{min-height:96px; resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:3px solid var(--accent-soft); border-color:var(--accent);
+  }
+  .field-2col{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:560px){ .field-2col{grid-template-columns:1fr} }
+
+  .seg{display:flex; gap:10px}
+  .seg button{
+    flex:1; min-height:54px; border-radius:12px; border:1.5px solid var(--line);
+    background:var(--bg); font-size:18px; font-weight:600; color:var(--ink);
+  }
+  .seg button.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+
+  .foto-pick{
+    width:100%; aspect-ratio:16/9; max-height:340px; border-radius:var(--radius);
+    border:2px dashed var(--line); background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    color:var(--muted); font-size:18px; font-weight:600; overflow:hidden; position:relative; padding:0;
+  }
+  .foto-pick img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0}
+  .foto-pick .cam{font-size:44px}
+  .foto-pick .cambiar{
+    position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+    background:rgba(0,0,0,.6); color:#fff; padding:8px 18px; border-radius:999px; font-size:16px;
+  }
+
+  /* ---------- Detail ---------- */
+  .hero{
+    border-radius:var(--radius); overflow:hidden; border:1.5px solid var(--line);
+    box-shadow:var(--shadow); background:var(--surface-2); margin-bottom:18px;
+  }
+  .hero img{width:100%; max-height:420px; object-fit:cover}
+  .hero .foto-placeholder{height:260px; display:flex; align-items:center; justify-content:center; font-size:96px}
+  .detalle-head{display:flex; align-items:flex-start; gap:12px; margin-bottom:6px}
+  .detalle-head h2{font-size:32px; font-weight:800; flex:1}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 18px}
+  .badge{
+    padding:5px 14px; border-radius:999px; font-size:16px; font-weight:700;
+    background:var(--accent-soft); color:var(--accent);
+  }
+  .badge.ochre{background:var(--ochre-soft); color:var(--ochre)}
+  .badge.neutro{background:var(--surface-2); color:var(--muted)}
+
+  .datos{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; margin-bottom:22px}
+  .dato{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:12px 16px}
+  .dato .k{font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+  .dato .v{font-size:19px; font-weight:600; margin-top:2px; font-variant-numeric:tabular-nums}
+
+  .sec-title{display:flex; align-items:center; gap:10px; margin:26px 0 14px}
+  .sec-title h3{font-size:23px; font-weight:800; flex:1}
+
+  .evento{
+    display:flex; gap:14px; background:var(--surface); border:1.5px solid var(--line);
+    border-radius:12px; padding:14px 16px; margin-bottom:10px; align-items:flex-start;
+  }
+  .evento .icono{
+    width:46px; height:46px; border-radius:12px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+  }
+  .evento .cuerpo{flex:1; min-width:0}
+  .evento .tipo{font-weight:800; font-size:18px}
+  .evento .fecha{color:var(--muted); font-size:16px; font-variant-numeric:tabular-nums}
+  .evento .detalle{margin-top:4px; font-size:17px; overflow-wrap:break-word}
+  .evento .quitar{
+    background:none; border:none; color:var(--muted); font-size:22px; padding:8px; flex:0 0 auto;
+  }
+  .proxima{margin-top:6px; font-size:16px; font-weight:700; color:var(--accent)}
+  .proxima.tarde{color:var(--danger)}
+
+  /* ---------- Avisos de próximas dosis ---------- */
+  .avisos{margin-bottom:20px}
+  .aviso{
+    width:100%; text-align:left; display:flex; gap:12px; align-items:center;
+    background:var(--surface); border:1.5px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin-bottom:8px; font-size:17px; color:var(--ink);
+  }
+  .aviso:active{background:var(--surface-2)}
+  .aviso .icono{
+    width:44px; height:44px; border-radius:12px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center; font-size:21px;
+  }
+  .aviso .cuando{font-weight:800; color:var(--accent); white-space:nowrap; font-size:16px}
+  .aviso.tarde{border-color:var(--danger)}
+  .aviso.tarde .cuando{color:var(--danger)}
+
+  /* ---------- Ajustes ---------- */
+  .ajuste-item{margin-bottom:16px}
+  .ajuste-item p{color:var(--muted); font-size:16px; margin:6px 0 10px}
+  .stats{display:flex; gap:12px; margin-bottom:22px; flex-wrap:wrap}
+  .stat{flex:1; min-width:140px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 18px; text-align:center}
+  .stat .n{font-size:34px; font-weight:800; font-family:ui-rounded,-apple-system,sans-serif; color:var(--accent); font-variant-numeric:tabular-nums}
+  .stat .l{color:var(--muted); font-size:15px; font-weight:600}
+
+  /* ---------- Modal & toast ---------- */
+  .modal-fondo{
+    position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal{
+    background:var(--surface); border-radius:20px; padding:26px; max-width:440px; width:100%;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+  }
+  .modal h3{font-size:22px; margin-bottom:8px}
+  .modal p{color:var(--muted); margin:0 0 20px; font-size:17px}
+  .toast{
+    position:fixed; bottom:calc(96px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    background:var(--ink); color:var(--bg); padding:14px 26px; border-radius:999px;
+    font-size:17px; font-weight:700; z-index:60; box-shadow:var(--shadow);
+    opacity:0; transition:opacity .25s; pointer-events:none; max-width:90vw; text-align:center;
+  }
+  .toast.ver{opacity:1}
+
+  .volver{
+    display:inline-flex; align-items:center; gap:8px; min-height:52px;
+    background:var(--surface); border:1.5px solid var(--line); border-radius:14px;
+    padding:8px 20px 8px 14px; font-size:18px; font-weight:700; color:var(--ink); margin-bottom:18px;
+  }
+  .volver:active{background:var(--surface-2)}
+
+  h2.vista-titulo{font-size:28px; font-weight:800; margin-bottom:18px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important}
+  }
+  button:focus-visible, a:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" accept="image/*" id="inputFoto" hidden>
+<input type="file" accept=".json,application/json" id="inputImportar" hidden>
+
+<script>
+"use strict";
+
+/* ============ Datos base ============ */
+const ESPECIES = [
+  {id:"vaca",    nombre:"Vaca",    icono:"🐄"},
+  {id:"toro",    nombre:"Toro",    icono:"🐂"},
+  {id:"becerro", nombre:"Becerro/a", icono:"🐮"},
+  {id:"caballo", nombre:"Caballo", icono:"🐴"},
+  {id:"cabra",   nombre:"Cabra",   icono:"🐐"},
+  {id:"oveja",   nombre:"Oveja",   icono:"🐑"},
+  {id:"cerdo",   nombre:"Cerdo",   icono:"🐖"},
+  {id:"gallina", nombre:"Gallina", icono:"🐔"},
+  {id:"otro",    nombre:"Otro",    icono:"🐾"},
+];
+const TIPOS_EVENTO = [
+  {id:"vacuna", nombre:"Vacuna",          icono:"💉", css:"vacuna"},
+  {id:"despar", nombre:"Desparasitación", icono:"💊", css:"despar"},
+  {id:"trat",   nombre:"Tratamiento",     icono:"🩺", css:"trat"},
+  {id:"peso",   nombre:"Peso",            icono:"⚖️", css:"peso"},
+  {id:"parto",  nombre:"Parto / cría",    icono:"🐣", css:"parto"},
+  {id:"nota",   nombre:"Nota",            icono:"📝", css:"nota"},
+];
+const espPor = id => ESPECIES.find(e=>e.id===id) || ESPECIES[ESPECIES.length-1];
+const tipoPor = id => TIPOS_EVENTO.find(t=>t.id===id) || TIPOS_EVENTO[TIPOS_EVENTO.length-1];
+
+/* ============ Base de datos (IndexedDB) ============ */
+let db = null;
+function abrirDB(){
+  return new Promise((res, rej)=>{
+    const r = indexedDB.open("mi-rancho", 1);
+    r.onupgradeneeded = e => {
+      e.target.result.createObjectStore("animales", {keyPath:"id"});
+    };
+    r.onsuccess = e => { db = e.target.result; res(); };
+    r.onerror = () => rej(r.error);
+  });
+}
+function dbTodos(){
+  return new Promise((res, rej)=>{
+    const r = db.transaction("animales").objectStore("animales").getAll();
+    r.onsuccess = () => res(r.result || []);
+    r.onerror = () => rej(r.error);
+  });
+}
+function dbGuardar(animal){
+  return new Promise((res, rej)=>{
+    const t = db.transaction("animales","readwrite");
+    t.objectStore("animales").put(animal);
+    t.oncomplete = res; t.onerror = () => rej(t.error);
+  });
+}
+function dbBorrar(id){
+  return new Promise((res, rej)=>{
+    const t = db.transaction("animales","readwrite");
+    t.objectStore("animales").delete(id);
+    t.oncomplete = res; t.onerror = () => rej(t.error);
+  });
+}
+
+/* ============ Estado ============ */
+let animales = [];
+const estado = {
+  vista: "lista",       // lista | form | detalle | ajustes
+  animalId: null,       // detalle
+  editId: null,         // form (null = nuevo)
+  busqueda: "",
+  filtro: "todos",
+  fotoTemp: null,       // dataURL elegida en el formulario
+  sexoTemp: "",
+  formDraft: null,      // conserva lo escrito al elegir foto
+  mostrandoFormEvento: false,
+};
+
+/* ============ Utilidades ============ */
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+
+function fechaBonita(iso){
+  if(!iso) return "";
+  const [a,m,d] = iso.split("-").map(Number);
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  if(!a || !m || !d) return iso;
+  return `${d} de ${meses[m-1]} de ${a}`;
+}
+function edadTexto(iso){
+  if(!iso) return "";
+  const nac = new Date(iso + "T00:00:00");
+  if(isNaN(nac)) return "";
+  const hoy = new Date();
+  let meses = (hoy.getFullYear()-nac.getFullYear())*12 + (hoy.getMonth()-nac.getMonth());
+  if(hoy.getDate() < nac.getDate()) meses--;
+  if(meses < 0) return "";
+  const a = Math.floor(meses/12), m = meses%12;
+  if(a === 0 && m === 0) return "recién nacido";
+  const pa = a === 1 ? "1 año" : `${a} años`;
+  const pm = m === 1 ? "1 mes" : `${m} meses`;
+  if(a === 0) return pm;
+  if(m === 0) return pa;
+  return `${pa}, ${pm}`;
+}
+function hoyISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function textoCuando(iso){
+  const dias = Math.round((new Date(iso+"T00:00:00") - new Date(hoyISO()+"T00:00:00")) / 86400000);
+  if(dias < 0) return dias === -1 ? "Atrasada 1 día" : `Atrasada ${-dias} días`;
+  if(dias === 0) return "¡Hoy!";
+  if(dias === 1) return "Mañana";
+  return `En ${dias} días`;
+}
+/* Para cada animal y tipo (vacuna/desparasitación/tratamiento) toma solo el
+   registro MÁS RECIENTE: si tiene "próxima dosis", es un pendiente. Al apuntar
+   la nueva dosis, el aviso viejo desaparece solo. */
+function recordatorios(){
+  const out = [];
+  for(const a of animales){
+    const ultimoPorTipo = {};
+    for(const ev of (a.eventos||[])){
+      if(!["vacuna","despar","trat"].includes(ev.tipo)) continue;
+      const previo = ultimoPorTipo[ev.tipo];
+      if(!previo || (ev.fecha||"") > (previo.fecha||"")) ultimoPorTipo[ev.tipo] = ev;
+    }
+    for(const tipo in ultimoPorTipo){
+      const ev = ultimoPorTipo[tipo];
+      if(ev.proxima) out.push({animal:a, ev});
+    }
+  }
+  out.sort((x,y)=>x.ev.proxima.localeCompare(y.ev.proxima));
+  return out;
+}
+let toastTimer = null;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("ver");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("ver"), 2600);
+}
+function confirmar(titulo, texto, textoBoton){
+  return new Promise(res=>{
+    const fondo = document.createElement("div");
+    fondo.className = "modal-fondo";
+    fondo.innerHTML = `
+      <div class="modal" role="alertdialog" aria-label="${esc(titulo)}">
+        <h3>${esc(titulo)}</h3>
+        <p>${esc(texto)}</p>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-r="no">Cancelar</button>
+          <button class="btn btn-danger" data-r="si">${esc(textoBoton)}</button>
+        </div>
+      </div>`;
+    fondo.addEventListener("click", e=>{
+      const r = e.target.closest("[data-r]")?.dataset.r;
+      if(r || e.target === fondo){ fondo.remove(); res(r === "si"); }
+    });
+    document.body.appendChild(fondo);
+  });
+}
+
+/* Comprimir foto a JPEG máx 1000px para que la base no crezca demasiado */
+function comprimirFoto(file){
+  return new Promise((res, rej)=>{
+    const lector = new FileReader();
+    lector.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1000;
+        let {width:w, height:h} = img;
+        if(w > MAX || h > MAX){
+          const f = MAX / Math.max(w,h);
+          w = Math.round(w*f); h = Math.round(h*f);
+        }
+        const c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        res(c.toDataURL("image/jpeg", .72));
+      };
+      img.onerror = rej;
+      img.src = lector.result;
+    };
+    lector.onerror = rej;
+    lector.readAsDataURL(file);
+  });
+}
+
+/* ============ Vistas ============ */
+function render(){
+  const app = $("#app");
+  if(estado.vista === "lista")   app.innerHTML = vistaLista();
+  if(estado.vista === "form")    app.innerHTML = vistaForm();
+  if(estado.vista === "detalle") app.innerHTML = vistaDetalle();
+  if(estado.vista === "ajustes") app.innerHTML = vistaAjustes();
+}
+
+function irA(vista, extra={}){
+  Object.assign(estado, {vista}, extra);
+  render();
+  window.scrollTo(0,0);
+}
+
+/* ---------- Lista ---------- */
+function vistaLista(){
+  const q = estado.busqueda.trim().toLowerCase();
+  let lista = [...animales].sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  if(estado.filtro !== "todos") lista = lista.filter(a=>a.especie === estado.filtro);
+  if(q) lista = lista.filter(a =>
+    (a.nombre||"").toLowerCase().includes(q) ||
+    (a.arete||"").toLowerCase().includes(q) ||
+    (a.raza||"").toLowerCase().includes(q));
+
+  const especiesUsadas = [...new Set(animales.map(a=>a.especie))];
+  const chips = especiesUsadas.length > 1 ? `
+    <div class="chips">
+      <button class="chip ${estado.filtro==="todos"?"on":""}" onclick="setFiltro('todos')">Todos (${animales.length})</button>
+      ${especiesUsadas.map(id=>{
+        const e = espPor(id);
+        const n = animales.filter(a=>a.especie===id).length;
+        return `<button class="chip ${estado.filtro===id?"on":""}" onclick="setFiltro('${id}')">${e.icono} ${e.nombre} (${n})</button>`;
+      }).join("")}
+    </div>` : "";
+
+  const cuerpo = animales.length === 0 ? `
+    <div class="empty">
+      <div class="big">🐄</div>
+      <h2 class="display">Aún no hay animales</h2>
+      <p>Toque el botón verde de abajo para<br>agregar su primer animal con foto.</p>
+    </div>`
+  : lista.length === 0 ? `
+    <div class="empty">
+      <div class="big">🔍</div>
+      <h2 class="display">No se encontró nada</h2>
+      <p>Revise el nombre o quite el filtro.</p>
+    </div>`
+  : `<div class="grid">${lista.map(cardAnimal).join("")}</div>`;
+
+  const avisos = recordatorios();
+  const seccionAvisos = avisos.length && !q && estado.filtro === "todos" ? `
+    <div class="avisos">
+      <div class="sec-title" style="margin:4px 0 10px"><h3>🔔 Próximas vacunas y dosis</h3></div>
+      ${avisos.map(({animal, ev})=>{
+        const t = tipoPor(ev.tipo);
+        const tarde = ev.proxima < hoyISO();
+        return `
+        <button class="aviso ${tarde ? "tarde" : ""}" onclick="irA('detalle',{animalId:'${animal.id}',mostrandoFormEvento:false})">
+          <div class="icono" style="background:var(--ev-${t.css}-soft); color:var(--ev-${t.css})" aria-hidden="true">${t.icono}</div>
+          <div style="flex:1; min-width:0">
+            <strong>${esc(animal.nombre)}</strong> — ${t.nombre}${ev.producto ? ` (${esc(ev.producto)})` : ""}${ev.dosis ? `, ${esc(ev.dosis)}` : ""}
+            <div style="color:var(--muted); font-size:15px">${fechaBonita(ev.proxima)}</div>
+          </div>
+          <div class="cuando">${textoCuando(ev.proxima)}</div>
+        </button>`;
+      }).join("")}
+    </div>` : "";
+
+  return `
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">🐄</div>
+        <div>
+          <h1>Mis Animales</h1>
+          <small>${animales.length === 1 ? "1 animal registrado" : animales.length + " animales registrados"}</small>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="irA('ajustes')" aria-label="Ajustes y respaldo">⚙️</button>
+    </header>
+    <div class="search-wrap">
+      <span class="lupa" aria-hidden="true">🔍</span>
+      <input class="search" type="text" placeholder="Buscar por nombre o arete…"
+        value="${esc(estado.busqueda)}" oninput="setBusqueda(this.value)" aria-label="Buscar animal">
+    </div>
+    ${chips}
+    ${seccionAvisos}
+    ${cuerpo}
+    <div class="fab-bar">
+      <button class="btn btn-primary" onclick="abrirNuevo()">➕ &nbsp;Agregar animal</button>
+    </div>`;
+}
+function cardAnimal(a){
+  const e = espPor(a.especie);
+  const foto = a.foto
+    ? `<img class="foto" src="${a.foto}" alt="Foto de ${esc(a.nombre)}">`
+    : `<div class="foto-placeholder" aria-hidden="true">${e.icono}</div>`;
+  const edad = edadTexto(a.nacimiento);
+  return `
+    <button class="card" onclick="irA('detalle',{animalId:'${a.id}',mostrandoFormEvento:false})" aria-label="Ver ${esc(a.nombre)}">
+      ${foto}
+      <div class="info">
+        <div class="nombre">${esc(a.nombre)}</div>
+        <div class="sub">
+          <span>${e.icono} ${e.nombre}</span>
+          ${a.arete ? `<span class="tag-arete">Nº ${esc(a.arete)}</span>` : ""}
+          ${edad ? `<span>· ${edad}</span>` : ""}
+        </div>
+      </div>
+    </button>`;
+}
+function setBusqueda(v){
+  estado.busqueda = v;
+  // re-render conservando el foco del buscador
+  const pos = document.activeElement?.selectionStart;
+  render();
+  const inp = $("input.search");
+  if(inp){ inp.focus(); if(pos != null) inp.setSelectionRange(pos,pos); }
+}
+function setFiltro(f){ estado.filtro = f; render(); }
+
+/* ---------- Formulario ---------- */
+function abrirNuevo(){
+  estado.fotoTemp = null; estado.sexoTemp = ""; estado.formDraft = null;
+  irA("form", {editId:null});
+}
+function abrirEditar(id){
+  const a = animales.find(x=>x.id===id);
+  if(!a) return;
+  estado.fotoTemp = a.foto || null;
+  estado.sexoTemp = a.sexo || "";
+  estado.formDraft = {...a};
+  irA("form", {editId:id});
+}
+function vistaForm(){
+  const d = estado.formDraft || {};
+  const editando = !!estado.editId;
+  const nombres = animales.map(a=>a.nombre).filter(Boolean);
+  const foto = estado.fotoTemp
+    ? `<img src="${estado.fotoTemp}" alt="Foto elegida"><span class="cambiar">Cambiar foto</span>`
+    : `<span class="cam" aria-hidden="true">📷</span><span>Tomar o elegir foto</span>`;
+  return `
+    <button class="volver" onclick="cancelarForm()">← Volver</button>
+    <h2 class="vista-titulo">${editando ? "Editar animal" : "Nuevo animal"}</h2>
+    <form class="panel" onsubmit="guardarAnimal(event)">
+      <div class="field">
+        <label>Foto <span class="opcional">(opcional)</span></label>
+        <button type="button" class="foto-pick" onclick="elegirFoto()" aria-label="Tomar o elegir foto">${foto}</button>
+      </div>
+      <div class="field">
+        <label for="f-nombre">Nombre</label>
+        <input type="text" id="f-nombre" required autocomplete="off" placeholder="Ej. La Pinta" value="${esc(d.nombre)}">
+      </div>
+      <div class="field-2col">
+        <div class="field">
+          <label for="f-arete">Número de arete <span class="opcional">(opcional)</span></label>
+          <input type="text" id="f-arete" autocomplete="off" placeholder="Ej. 042" value="${esc(d.arete)}">
+        </div>
+        <div class="field">
+          <label for="f-especie">Tipo de animal</label>
+          <select id="f-especie">
+            ${ESPECIES.map(e=>`<option value="${e.id}" ${d.especie===e.id?"selected":""}>${e.icono} ${e.nombre}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Sexo <span class="opcional">(opcional)</span></label>
+        <div class="seg">
+          <button type="button" class="${estado.sexoTemp==="hembra"?"on":""}" onclick="setSexo('hembra')">♀ Hembra</button>
+          <button type="button" class="${estado.sexoTemp==="macho"?"on":""}" onclick="setSexo('macho')">♂ Macho</button>
+        </div>
+      </div>
+      <div class="field-2col">
+        <div class="field">
+          <label for="f-nacimiento">Fecha de nacimiento <span class="opcional">(opcional)</span></label>
+          <input type="date" id="f-nacimiento" value="${esc(d.nacimiento)}">
+        </div>
+        <div class="field">
+          <label for="f-raza">Raza <span class="opcional">(opcional)</span></label>
+          <input type="text" id="f-raza" autocomplete="off" placeholder="Ej. Brahman" value="${esc(d.raza)}">
+        </div>
+      </div>
+      <div class="field-2col">
+        <div class="field">
+          <label for="f-madre">Madre <span class="opcional">(opcional)</span></label>
+          <input type="text" id="f-madre" list="lista-nombres" autocomplete="off" placeholder="Nombre de la madre" value="${esc(d.madre)}">
+        </div>
+        <div class="field">
+          <label for="f-padre">Padre <span class="opcional">(opcional)</span></label>
+          <input type="text" id="f-padre" list="lista-nombres" autocomplete="off" placeholder="Nombre del padre" value="${esc(d.padre)}">
+        </div>
+      </div>
+      <datalist id="lista-nombres">${nombres.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
+      <div class="field">
+        <label for="f-notas">Notas <span class="opcional">(opcional)</span></label>
+        <textarea id="f-notas" placeholder="Señas, color, dónde se compró…">${esc(d.notas)}</textarea>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="cancelarForm()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">💾 Guardar</button>
+      </div>
+    </form>`;
+}
+function leerForm(){
+  return {
+    nombre: $("#f-nombre").value.trim(),
+    arete: $("#f-arete").value.trim(),
+    especie: $("#f-especie").value,
+    nacimiento: $("#f-nacimiento").value,
+    raza: $("#f-raza").value.trim(),
+    madre: $("#f-madre").value.trim(),
+    padre: $("#f-padre").value.trim(),
+    notas: $("#f-notas").value.trim(),
+  };
+}
+function setSexo(s){
+  estado.formDraft = {...(estado.formDraft||{}), ...leerForm()};
+  estado.sexoTemp = estado.sexoTemp === s ? "" : s;
+  render();
+}
+function elegirFoto(){
+  estado.formDraft = {...(estado.formDraft||{}), ...leerForm()};
+  $("#inputFoto").click();
+}
+function cancelarForm(){
+  if(estado.editId) irA("detalle", {animalId: estado.editId});
+  else irA("lista");
+}
+async function guardarAnimal(ev){
+  ev.preventDefault();
+  const datos = leerForm();
+  if(!datos.nombre){ toast("Escriba un nombre para el animal"); return; }
+  const previo = estado.editId ? animales.find(a=>a.id===estado.editId) : null;
+  const animal = {
+    id: previo ? previo.id : uid(),
+    ...datos,
+    sexo: estado.sexoTemp,
+    foto: estado.fotoTemp,
+    eventos: previo ? (previo.eventos||[]) : [],
+    creado: previo ? previo.creado : new Date().toISOString(),
+  };
+  try{
+    await dbGuardar(animal);
+  }catch(e){
+    toast("No se pudo guardar. Intente de nuevo."); return;
+  }
+  const i = animales.findIndex(a=>a.id===animal.id);
+  if(i >= 0) animales[i] = animal; else animales.push(animal);
+  toast(previo ? "Cambios guardados ✓" : `${animal.nombre} agregado ✓`);
+  irA("detalle", {animalId: animal.id, mostrandoFormEvento:false});
+}
+
+/* ---------- Detalle ---------- */
+function vistaDetalle(){
+  const a = animales.find(x=>x.id===estado.animalId);
+  if(!a){ estado.vista = "lista"; return vistaLista(); }
+  const e = espPor(a.especie);
+  const edad = edadTexto(a.nacimiento);
+  const foto = a.foto
+    ? `<img src="${a.foto}" alt="Foto de ${esc(a.nombre)}">`
+    : `<div class="foto-placeholder" aria-hidden="true">${e.icono}</div>`;
+
+  const datos = [
+    a.arete && `<div class="dato"><div class="k">Arete</div><div class="v">Nº ${esc(a.arete)}</div></div>`,
+    a.nacimiento && `<div class="dato"><div class="k">Nacimiento</div><div class="v">${fechaBonita(a.nacimiento)}</div></div>`,
+    a.raza && `<div class="dato"><div class="k">Raza</div><div class="v">${esc(a.raza)}</div></div>`,
+    a.madre && `<div class="dato"><div class="k">Madre</div><div class="v">${esc(a.madre)}</div></div>`,
+    a.padre && `<div class="dato"><div class="k">Padre</div><div class="v">${esc(a.padre)}</div></div>`,
+  ].filter(Boolean).join("");
+
+  const eventos = [...(a.eventos||[])].sort((x,y)=>(y.fecha||"").localeCompare(x.fecha||""));
+  const listaEventos = eventos.length === 0 && !estado.mostrandoFormEvento
+    ? `<div class="empty" style="padding:34px 20px"><p style="margin:0">Todavía no hay registros de salud.<br>Toque <strong>“Agregar registro”</strong> para apuntar una vacuna, un peso o un tratamiento.</p></div>`
+    : eventos.map(ev=>{
+        const t = tipoPor(ev.tipo);
+        return `
+        <div class="evento">
+          <div class="icono" style="background:var(--ev-${t.css}-soft); color:var(--ev-${t.css})" aria-hidden="true">${t.icono}</div>
+          <div class="cuerpo">
+            <span class="tipo" style="color:var(--ev-${t.css})">${t.nombre}</span>
+            <span class="fecha"> · ${fechaBonita(ev.fecha)}</span>
+            ${ev.producto || ev.dosis ? `<div class="detalle"><strong>${esc(ev.producto)}</strong>${ev.producto && ev.dosis ? " — " : ""}${ev.dosis ? `dosis: ${esc(ev.dosis)}` : ""}</div>` : ""}
+            ${ev.detalle ? `<div class="detalle">${esc(ev.detalle)}</div>` : ""}
+            ${ev.proxima ? `<div class="proxima ${ev.proxima < hoyISO() ? "tarde" : ""}">🔔 Próxima dosis: ${fechaBonita(ev.proxima)}</div>` : ""}
+          </div>
+          <button class="quitar" onclick="quitarEvento('${a.id}','${ev.id}')" aria-label="Borrar este registro">✕</button>
+        </div>`;
+      }).join("");
+
+  const formEvento = estado.mostrandoFormEvento ? `
+    <form class="panel" style="margin-bottom:14px" onsubmit="guardarEvento(event,'${a.id}')">
+      <div class="field-2col">
+        <div class="field">
+          <label for="e-tipo">¿Qué se hizo?</label>
+          <select id="e-tipo" onchange="document.getElementById('campos-med').style.display = ['vacuna','despar','trat'].includes(this.value) ? '' : 'none'">
+            ${TIPOS_EVENTO.map(t=>`<option value="${t.id}">${t.icono} ${t.nombre}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label for="e-fecha">Fecha en que se hizo</label>
+          <input type="date" id="e-fecha" value="${hoyISO()}">
+        </div>
+      </div>
+      <div id="campos-med">
+        <div class="field-2col">
+          <div class="field">
+            <label for="e-producto">Vacuna o medicamento <span class="opcional">(opcional)</span></label>
+            <input type="text" id="e-producto" autocomplete="off" placeholder="Ej. Triple bovina, Ivermectina">
+          </div>
+          <div class="field">
+            <label for="e-dosis">Dosis <span class="opcional">(opcional)</span></label>
+            <input type="text" id="e-dosis" autocomplete="off" placeholder="Ej. 5 ml">
+          </div>
+        </div>
+        <div class="field">
+          <label for="e-proxima">¿Cuándo toca la próxima dosis? <span class="opcional">(opcional — le avisará en la pantalla principal)</span></label>
+          <input type="date" id="e-proxima">
+        </div>
+      </div>
+      <div class="field">
+        <label for="e-detalle">Notas <span class="opcional">(opcional)</span></label>
+        <input type="text" id="e-detalle" autocomplete="off" placeholder="Ej. 450 kg · Se le curó la pata">
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="toggleFormEvento(false)">Cancelar</button>
+        <button type="submit" class="btn btn-primary">💾 Guardar registro</button>
+      </div>
+    </form>` : "";
+
+  return `
+    <button class="volver" onclick="irA('lista')">← Volver a la lista</button>
+    <div class="hero">${foto}</div>
+    <div class="detalle-head"><h2>${esc(a.nombre)}</h2></div>
+    <div class="badges">
+      <span class="badge">${e.icono} ${e.nombre}</span>
+      ${a.sexo ? `<span class="badge neutro">${a.sexo === "hembra" ? "♀ Hembra" : "♂ Macho"}</span>` : ""}
+      ${edad ? `<span class="badge ochre">${edad}</span>` : ""}
+    </div>
+    ${datos ? `<div class="datos">${datos}</div>` : ""}
+    ${a.notas ? `<div class="panel" style="margin-bottom:8px"><div class="dato" style="border:none;padding:0;background:none"><div class="k">Notas</div><div class="v" style="font-weight:500;white-space:pre-wrap">${esc(a.notas)}</div></div></div>` : ""}
+    <div class="sec-title">
+      <h3>🩺 Historial de salud</h3>
+    </div>
+    ${estado.mostrandoFormEvento ? "" : `<button class="btn btn-primary" style="margin-bottom:14px" onclick="toggleFormEvento(true)">➕ Agregar registro</button>`}
+    ${formEvento}
+    ${listaEventos}
+    <div class="sec-title"><h3>Opciones</h3></div>
+    <div class="btn-row" style="margin-bottom:10px">
+      <button class="btn btn-secondary" onclick="abrirEditar('${a.id}')">✏️ Editar datos</button>
+      <button class="btn btn-danger" onclick="borrarAnimal('${a.id}')">🗑 Borrar animal</button>
+    </div>`;
+}
+function toggleFormEvento(v){ estado.mostrandoFormEvento = v; render(); }
+async function guardarEvento(ev, animalId){
+  ev.preventDefault();
+  const a = animales.find(x=>x.id===animalId);
+  if(!a) return;
+  const tipo = $("#e-tipo").value;
+  const esMedico = ["vacuna","despar","trat"].includes(tipo);
+  const nuevo = {
+    id: uid(),
+    tipo,
+    fecha: $("#e-fecha").value || hoyISO(),
+    producto: esMedico ? $("#e-producto").value.trim() : "",
+    dosis: esMedico ? $("#e-dosis").value.trim() : "",
+    proxima: esMedico ? $("#e-proxima").value : "",
+    detalle: $("#e-detalle").value.trim(),
+  };
+  a.eventos = a.eventos || [];
+  a.eventos.push(nuevo);
+  try{ await dbGuardar(a); }catch(e){ toast("No se pudo guardar."); return; }
+  estado.mostrandoFormEvento = false;
+  toast("Registro guardado ✓");
+  render();
+}
+async function quitarEvento(animalId, eventoId){
+  const a = animales.find(x=>x.id===animalId);
+  if(!a) return;
+  const ok = await confirmar("¿Borrar este registro?", "Se quitará este apunte del historial de salud.", "Sí, borrar");
+  if(!ok) return;
+  a.eventos = (a.eventos||[]).filter(e=>e.id!==eventoId);
+  try{ await dbGuardar(a); }catch(e){ toast("No se pudo borrar."); return; }
+  render();
+}
+async function borrarAnimal(id){
+  const a = animales.find(x=>x.id===id);
+  if(!a) return;
+  const ok = await confirmar(`¿Borrar a ${a.nombre}?`, "Se borrará su foto y todo su historial. Esto no se puede deshacer.", "Sí, borrar");
+  if(!ok) return;
+  try{ await dbBorrar(id); }catch(e){ toast("No se pudo borrar."); return; }
+  animales = animales.filter(x=>x.id!==id);
+  toast(`${a.nombre} borrado`);
+  irA("lista");
+}
+
+/* ---------- Ajustes / respaldo ---------- */
+function vistaAjustes(){
+  const totalEventos = animales.reduce((s,a)=>s+(a.eventos||[]).length, 0);
+  return `
+    <button class="volver" onclick="irA('lista')">← Volver a la lista</button>
+    <h2 class="vista-titulo">Ajustes y respaldo</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">${animales.length}</div><div class="l">Animales</div></div>
+      <div class="stat"><div class="n">${totalEventos}</div><div class="l">Registros de salud</div></div>
+    </div>
+    <div class="panel">
+      <div class="ajuste-item">
+        <h3 class="display" style="font-size:20px">💾 Guardar copia de respaldo</h3>
+        <p>Toda la información vive únicamente en esta tableta. De vez en cuando guarde una copia:
+        se descarga un archivo con todos sus animales, fotos e historial. Guárdelo en un lugar seguro
+        (por ejemplo, mándeselo por correo).</p>
+        <button class="btn btn-primary" onclick="exportar()">⬇️ Descargar copia de respaldo</button>
+      </div>
+      <hr style="border:none; border-top:1.5px solid var(--line); margin:22px 0">
+      <div class="ajuste-item">
+        <h3 class="display" style="font-size:20px">📂 Recuperar una copia</h3>
+        <p>Si cambió de tableta o algo se borró, elija aquí el archivo de respaldo para recuperar todo.</p>
+        <button class="btn btn-secondary" onclick="document.getElementById('inputImportar').click()">⬆️ Cargar copia de respaldo</button>
+      </div>
+    </div>
+    <p style="color:var(--muted); font-size:15px; margin-top:18px; text-align:center">
+      Mis Animales · Sus datos no salen de este aparato.
+    </p>`;
+}
+function exportar(){
+  const datos = {app:"mi-rancho", version:1, exportado:new Date().toISOString(), animales};
+  const blob = new Blob([JSON.stringify(datos)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `mis-animales-respaldo-${hoyISO()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  toast("Copia de respaldo descargada ✓");
+}
+async function importar(file){
+  let datos;
+  try{
+    datos = JSON.parse(await file.text());
+    if(datos.app !== "mi-rancho" || !Array.isArray(datos.animales)) throw new Error("formato");
+  }catch(e){
+    toast("Ese archivo no es una copia de Mis Animales."); return;
+  }
+  let nuevos = 0, actualizados = 0;
+  for(const a of datos.animales){
+    if(!a || !a.id || !a.nombre) continue;
+    const existe = animales.some(x=>x.id===a.id);
+    await dbGuardar(a);
+    const i = animales.findIndex(x=>x.id===a.id);
+    if(i >= 0){ animales[i] = a; actualizados++; } else { animales.push(a); nuevos++; }
+  }
+  toast(`Copia cargada ✓ (${nuevos} nuevos, ${actualizados} actualizados)`);
+  irA("lista");
+}
+
+/* ============ Eventos globales ============ */
+document.getElementById("inputFoto").addEventListener("change", async e=>{
+  const f = e.target.files[0];
+  e.target.value = "";
+  if(!f) return;
+  try{
+    estado.fotoTemp = await comprimirFoto(f);
+    render();
+  }catch(err){
+    toast("No se pudo cargar esa foto.");
+  }
+});
+document.getElementById("inputImportar").addEventListener("change", e=>{
+  const f = e.target.files[0];
+  e.target.value = "";
+  if(f) importar(f);
+});
+
+/* ============ Arranque ============ */
+(async function(){
+  // Guardar una copia completa de la app en el aparato para que abra sin internet
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  }
+  try{
+    if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
+    await abrirDB();
+    animales = await dbTodos();
+  }catch(e){
+    document.getElementById("app").innerHTML =
+      `<div class="empty" style="margin-top:60px"><div class="big">⚠️</div><h2>No se pudo abrir la base de datos</h2><p>Cierre la aplicación y vuelva a abrirla.</p></div>`;
+    return;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
