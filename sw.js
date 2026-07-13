@@ -1,11 +1,13 @@
 /* Mis Animales — copia local para funcionar sin internet.
    Sube el número de versión cuando cambie cualquier archivo de la app. */
-const CACHE = "mis-animales-v1";
+const CACHE = "mis-animales-v3";
 const ARCHIVOS = ["./", "./index.html", "./manifest.json", "./icon-180.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then(c => c.addAll(ARCHIVOS.map(u => new Request(u, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -23,7 +25,8 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then(guardado => {
-      const red = fetch(e.request)
+      // "no-cache": al haber internet, siempre pregunta al servidor si hay versión nueva
+      const red = fetch(e.request, { cache: "no-cache" })
         .then(res => {
           if (res.ok && new URL(e.request.url).origin === self.location.origin) {
             const copia = res.clone();

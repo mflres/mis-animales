@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2E5E3A">
+<meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mis Animales">
@@ -35,51 +36,7 @@
     --shadow:0 2px 10px rgba(35,40,32,.10);
     --radius:16px;
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#16190F; --surface:#22261B; --surface-2:#2C3123;
-      --ink:#EDEFE3; --muted:#A8AF9A; --line:#3B4130;
-      --accent:#86B58F; --accent-ink:#14211A; --accent-soft:#2A3A2E;
-      --ochre:#D9A254; --ochre-soft:#3A3020;
-      --danger:#E0796B; --danger-soft:#3E2723;
-      --ev-vacuna:#7FAAD1; --ev-vacuna-soft:#243240;
-      --ev-despar:#A98FD6; --ev-despar-soft:#322A42;
-      --ev-trat:#E0796B;   --ev-trat-soft:#3E2723;
-      --ev-peso:#D9A254;   --ev-peso-soft:#3A3020;
-      --ev-parto:#8FBF98;  --ev-parto-soft:#26342A;
-      --ev-nota:#A8AF9A;   --ev-nota-soft:#2C3123;
-      --shadow:0 2px 12px rgba(0,0,0,.45);
-    }
-  }
-  :root[data-theme="light"]{
-    --bg:#F3F3EC; --surface:#FFFFFF; --surface-2:#E9EADF;
-    --ink:#232820; --muted:#68705F; --line:#D8DACB;
-    --accent:#2E5E3A; --accent-ink:#FFFFFF; --accent-soft:#DEEAE0;
-    --ochre:#B4762B; --ochre-soft:#F3E6D2;
-    --danger:#A33B2E; --danger-soft:#F5DFDB;
-    --ev-vacuna:#2B5D8A; --ev-vacuna-soft:#DCE8F2;
-    --ev-despar:#6B4E9B; --ev-despar-soft:#E8E1F3;
-    --ev-trat:#A33B2E;   --ev-trat-soft:#F5DFDB;
-    --ev-peso:#B4762B;   --ev-peso-soft:#F3E6D2;
-    --ev-parto:#2E5E3A;  --ev-parto-soft:#DEEAE0;
-    --ev-nota:#68705F;   --ev-nota-soft:#E9EADF;
-    --shadow:0 2px 10px rgba(35,40,32,.10);
-  }
-  :root[data-theme="dark"]{
-    --bg:#16190F; --surface:#22261B; --surface-2:#2C3123;
-    --ink:#EDEFE3; --muted:#A8AF9A; --line:#3B4130;
-    --accent:#86B58F; --accent-ink:#14211A; --accent-soft:#2A3A2E;
-    --ochre:#D9A254; --ochre-soft:#3A3020;
-    --danger:#E0796B; --danger-soft:#3E2723;
-    --ev-vacuna:#7FAAD1; --ev-vacuna-soft:#243240;
-    --ev-despar:#A98FD6; --ev-despar-soft:#322A42;
-    --ev-trat:#E0796B;   --ev-trat-soft:#3E2723;
-    --ev-peso:#D9A254;   --ev-peso-soft:#3A3020;
-    --ev-parto:#8FBF98;  --ev-parto-soft:#26342A;
-    --ev-nota:#A8AF9A;   --ev-nota-soft:#2C3123;
-    --shadow:0 2px 12px rgba(0,0,0,.45);
-  }
-
+  /* La app siempre se ve blanca y verde, sin importar el modo oscuro del aparato */
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
@@ -87,7 +44,12 @@
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size:18px; line-height:1.5;
     -webkit-text-size-adjust:100%;
+    -webkit-font-smoothing:antialiased;
   }
+  /* respuesta inmediata al tacto: sin la pausa de doble toque del iPad */
+  button, input, select, textarea, a{touch-action:manipulation}
+  @keyframes aparecer{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  .app.anim{animation:aparecer .22s ease-out}
   h1,h2,h3,.display{
     font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     text-wrap:balance; margin:0;
@@ -220,8 +182,30 @@
   }
   .seg button.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
 
+  /* ---------- Editor de foto (arrastrar + acercar) ---------- */
+  .editor-fondo{
+    position:fixed; inset:0; background:rgba(20,24,18,.82); z-index:70;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:16px; gap:14px;
+  }
+  .editor-marco{
+    width:min(92vw, 620px, 69vh); aspect-ratio:4/3; overflow:hidden; border-radius:16px;
+    position:relative; background:#0d0f0c; touch-action:none; cursor:grab;
+    box-shadow:0 12px 44px rgba(0,0,0,.5); flex:0 0 auto;
+  }
+  .editor-marco img{
+    position:absolute; left:0; top:0; transform-origin:0 0;
+    max-width:none; user-select:none; -webkit-user-select:none; pointer-events:none;
+  }
+  .editor-panel{
+    width:min(92vw, 620px); background:var(--surface); border-radius:16px; padding:16px 18px;
+  }
+  .editor-panel .hint{color:var(--muted); text-align:center; font-size:16px; margin:0 0 10px}
+  .editor-panel label{font-weight:700; font-size:16px; display:block; margin-bottom:4px}
+  .editor-panel input[type=range]{width:100%; height:44px; accent-color:var(--accent)}
+
   .foto-pick{
-    width:100%; aspect-ratio:16/9; max-height:340px; border-radius:var(--radius);
+    width:100%; aspect-ratio:4/3; max-height:340px; border-radius:var(--radius);
     border:2px dashed var(--line); background:var(--bg);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
     color:var(--muted); font-size:18px; font-weight:600; overflow:hidden; position:relative; padding:0;
@@ -238,7 +222,7 @@
     border-radius:var(--radius); overflow:hidden; border:1.5px solid var(--line);
     box-shadow:var(--shadow); background:var(--surface-2); margin-bottom:18px;
   }
-  .hero img{width:100%; max-height:420px; object-fit:cover}
+  .hero img{width:100%; aspect-ratio:4/3; max-height:440px; object-fit:cover}
   .hero .foto-placeholder{height:260px; display:flex; align-items:center; justify-content:center; font-size:96px}
   .detalle-head{display:flex; align-items:flex-start; gap:12px; margin-bottom:6px}
   .detalle-head h2{font-size:32px; font-weight:800; flex:1}
@@ -502,14 +486,13 @@ function confirmar(titulo, texto, textoBoton){
   });
 }
 
-/* Comprimir foto a JPEG máx 1000px para que la base no crezca demasiado */
-function comprimirFoto(file){
+/* Comprimir foto a JPEG (tamaño máximo configurable) */
+function comprimirFoto(file, MAX = 1000){
   return new Promise((res, rej)=>{
     const lector = new FileReader();
     lector.onload = () => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 1000;
         let {width:w, height:h} = img;
         if(w > MAX || h > MAX){
           const f = MAX / Math.max(w,h);
@@ -518,7 +501,7 @@ function comprimirFoto(file){
         const c = document.createElement("canvas");
         c.width = w; c.height = h;
         c.getContext("2d").drawImage(img, 0, 0, w, h);
-        res(c.toDataURL("image/jpeg", .72));
+        res(c.toDataURL("image/jpeg", .8));
       };
       img.onerror = rej;
       img.src = lector.result;
@@ -526,6 +509,86 @@ function comprimirFoto(file){
     lector.onerror = rej;
     lector.readAsDataURL(file);
   });
+}
+
+/* Editor: arrastre la foto y acérquela hasta que quede perfecta en el marco 4:3 */
+function abrirEditorFoto(dataURL){
+  const img = new Image();
+  img.onload = () => montarEditorFoto(img);
+  img.onerror = () => toast("No se pudo cargar esa foto.");
+  img.src = dataURL;
+}
+function montarEditorFoto(img){
+  const fondo = document.createElement("div");
+  fondo.className = "editor-fondo";
+  fondo.innerHTML = `
+    <div class="editor-marco" id="ed-marco"><img id="ed-img" src="${img.src}" alt="Foto para ajustar"></div>
+    <div class="editor-panel">
+      <p class="hint">👆 Arrastre la foto para acomodarla en el marco</p>
+      <label for="ed-zoom">🔍 Acercar / alejar</label>
+      <input type="range" id="ed-zoom" min="100" max="300" value="100" aria-label="Acercar o alejar la foto">
+      <div class="btn-row" style="margin-top:12px">
+        <button type="button" class="btn btn-secondary" id="ed-cancelar">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="ed-listo">✓ Usar así</button>
+      </div>
+    </div>`;
+  document.body.appendChild(fondo);
+
+  const marco = fondo.querySelector("#ed-marco");
+  const el = fondo.querySelector("#ed-img");
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  let zoom = 1, dx = 0, dy = 0;
+  const escalaBase = () => Math.max(marco.clientWidth/iw, marco.clientHeight/ih);
+  function encuadrar(){
+    const s = escalaBase()*zoom;
+    dx = Math.min(0, Math.max(marco.clientWidth - iw*s, dx));
+    dy = Math.min(0, Math.max(marco.clientHeight - ih*s, dy));
+  }
+  function pintar(){
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${escalaBase()*zoom})`;
+  }
+  // al abrir: la foto llena el marco, centrada
+  dx = (marco.clientWidth - iw*escalaBase())/2;
+  dy = (marco.clientHeight - ih*escalaBase())/2;
+  pintar();
+
+  fondo.querySelector("#ed-zoom").addEventListener("input", e => {
+    const z2 = Math.max(1, e.target.value/100);
+    const s1 = escalaBase()*zoom, s2 = escalaBase()*z2;
+    // acercar hacia el centro del marco
+    dx = marco.clientWidth/2 - (marco.clientWidth/2 - dx) * (s2/s1);
+    dy = marco.clientHeight/2 - (marco.clientHeight/2 - dy) * (s2/s1);
+    zoom = z2; encuadrar(); pintar();
+  });
+
+  let agarre = null;
+  marco.addEventListener("pointerdown", e => {
+    agarre = {x: e.clientX - dx, y: e.clientY - dy};
+    marco.setPointerCapture(e.pointerId);
+  });
+  marco.addEventListener("pointermove", e => {
+    if(!agarre) return;
+    dx = e.clientX - agarre.x;
+    dy = e.clientY - agarre.y;
+    encuadrar(); pintar();
+  });
+  marco.addEventListener("pointerup", () => { agarre = null; });
+  marco.addEventListener("pointercancel", () => { agarre = null; });
+
+  fondo.querySelector("#ed-cancelar").onclick = () => fondo.remove();
+  fondo.querySelector("#ed-listo").onclick = () => {
+    const s = escalaBase()*zoom;
+    const ANCHO = 1200;
+    const k = ANCHO / marco.clientWidth;
+    const c = document.createElement("canvas");
+    c.width = ANCHO;
+    c.height = Math.round(marco.clientHeight * k);
+    const g = c.getContext("2d");
+    g.drawImage(img, dx*k, dy*k, iw*s*k, ih*s*k);
+    estado.fotoTemp = c.toDataURL("image/jpeg", .8);
+    fondo.remove();
+    render();
+  };
 }
 
 /* ============ Vistas ============ */
@@ -540,11 +603,39 @@ function render(){
 function irA(vista, extra={}){
   Object.assign(estado, {vista}, extra);
   render();
+  const app = $("#app");
+  app.classList.remove("anim");
+  void app.offsetWidth;
+  app.classList.add("anim");
   window.scrollTo(0,0);
 }
 
 /* ---------- Lista ---------- */
 function vistaLista(){
+  return `
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">🐄</div>
+        <div>
+          <h1>Mis Animales</h1>
+          <small>${animales.length === 1 ? "1 animal registrado" : animales.length + " animales registrados"}</small>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="irA('ajustes')" aria-label="Ajustes y respaldo">⚙️</button>
+    </header>
+    <div class="search-wrap">
+      <span class="lupa" aria-hidden="true">🔍</span>
+      <input class="search" type="text" placeholder="Buscar por nombre o arete…"
+        value="${esc(estado.busqueda)}" oninput="setBusqueda(this.value)" aria-label="Buscar animal">
+    </div>
+    <div id="zona-resultados">${zonaResultados()}</div>
+    <div class="fab-bar">
+      <button class="btn btn-primary" onclick="abrirNuevo()">➕ &nbsp;Agregar animal</button>
+    </div>`;
+}
+/* Solo esta parte se vuelve a dibujar al escribir en el buscador,
+   así el teclado del iPad nunca se cierra a media palabra. */
+function zonaResultados(){
   const q = estado.busqueda.trim().toLowerCase();
   let lista = [...animales].sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
   if(estado.filtro !== "todos") lista = lista.filter(a=>a.especie === estado.filtro);
@@ -597,28 +688,7 @@ function vistaLista(){
       }).join("")}
     </div>` : "";
 
-  return `
-    <header class="top">
-      <div class="brand">
-        <div class="mark" aria-hidden="true">🐄</div>
-        <div>
-          <h1>Mis Animales</h1>
-          <small>${animales.length === 1 ? "1 animal registrado" : animales.length + " animales registrados"}</small>
-        </div>
-      </div>
-      <button class="icon-btn" onclick="irA('ajustes')" aria-label="Ajustes y respaldo">⚙️</button>
-    </header>
-    <div class="search-wrap">
-      <span class="lupa" aria-hidden="true">🔍</span>
-      <input class="search" type="text" placeholder="Buscar por nombre o arete…"
-        value="${esc(estado.busqueda)}" oninput="setBusqueda(this.value)" aria-label="Buscar animal">
-    </div>
-    ${chips}
-    ${seccionAvisos}
-    ${cuerpo}
-    <div class="fab-bar">
-      <button class="btn btn-primary" onclick="abrirNuevo()">➕ &nbsp;Agregar animal</button>
-    </div>`;
+  return chips + seccionAvisos + cuerpo;
 }
 function cardAnimal(a){
   const e = espPor(a.especie);
@@ -641,13 +711,14 @@ function cardAnimal(a){
 }
 function setBusqueda(v){
   estado.busqueda = v;
-  // re-render conservando el foco del buscador
-  const pos = document.activeElement?.selectionStart;
-  render();
-  const inp = $("input.search");
-  if(inp){ inp.focus(); if(pos != null) inp.setSelectionRange(pos,pos); }
+  const z = $("#zona-resultados");
+  if(z) z.innerHTML = zonaResultados();
 }
-function setFiltro(f){ estado.filtro = f; render(); }
+function setFiltro(f){
+  estado.filtro = f;
+  const z = $("#zona-resultados");
+  if(z) z.innerHTML = zonaResultados();
+}
 
 /* ---------- Formulario ---------- */
 function abrirNuevo(){
@@ -988,8 +1059,8 @@ document.getElementById("inputFoto").addEventListener("change", async e=>{
   e.target.value = "";
   if(!f) return;
   try{
-    estado.fotoTemp = await comprimirFoto(f);
-    render();
+    const data = await comprimirFoto(f, 1600);
+    abrirEditorFoto(data);
   }catch(err){
     toast("No se pudo cargar esa foto.");
   }
