@@ -742,11 +742,15 @@ function abrirNuevo(){
   estado.fotoTemp = null; estado.sexoTemp = "hembra"; estado.formDraft = null;
   irA("form", {editId:null});
 }
-/* Vaca → hembra, Toro → macho, automáticamente */
+/* El sexo se pre-selecciona según el tipo de animal (siempre se puede cambiar).
+   Becerro/a y Otro no marcan nada porque pueden ser cualquiera. */
+const SEXO_POR_ESPECIE = {
+  vaca:"hembra", toro:"macho", caballo:"macho",
+  cabra:"hembra", oveja:"hembra", cerdo:"macho", gallina:"hembra",
+};
 function cambioEspecie(v){
   estado.formDraft = {...(estado.formDraft||{}), ...leerForm()};
-  if(v === "vaca") estado.sexoTemp = "hembra";
-  if(v === "toro") estado.sexoTemp = "macho";
+  if(SEXO_POR_ESPECIE[v]) estado.sexoTemp = SEXO_POR_ESPECIE[v];
   render();
 }
 function abrirEditar(id){
