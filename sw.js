@@ -1,6 +1,6 @@
 /* Mis Animales — copia local para funcionar sin internet.
    Sube el número de versión cuando cambie cualquier archivo de la app. */
-const CACHE = "mis-animales-v5";
+const CACHE = "mis-animales-v6";
 const ARCHIVOS = ["./", "./index.html", "./manifest.json", "./icon-180.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {

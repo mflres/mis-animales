@@ -778,12 +778,12 @@ function vistaForm(){
       </div>
       <div class="field">
         <label for="f-nombre">Nombre</label>
-        <input type="text" id="f-nombre" required autocomplete="off" placeholder="Ej. La Pinta" value="${esc(d.nombre)}">
+        <input type="text" id="f-nombre" required autocomplete="off" value="${esc(d.nombre)}">
       </div>
       <div class="field-2col">
         <div class="field">
           <label for="f-arete">Número de arete <span class="opcional">(opcional)</span></label>
-          <input type="text" id="f-arete" autocomplete="off" placeholder="Ej. 042" value="${esc(d.arete)}">
+          <input type="text" id="f-arete" autocomplete="off" value="${esc(d.arete)}">
         </div>
         <div class="field">
           <label for="f-especie">Tipo de animal</label>
@@ -806,23 +806,23 @@ function vistaForm(){
         </div>
         <div class="field">
           <label for="f-raza">Raza <span class="opcional">(opcional)</span></label>
-          <input type="text" id="f-raza" autocomplete="off" placeholder="Ej. Brahman" value="${esc(d.raza)}">
+          <input type="text" id="f-raza" autocomplete="off" value="${esc(d.raza)}">
         </div>
       </div>
       <div class="field-2col">
         <div class="field">
           <label for="f-madre">Madre <span class="opcional">(opcional)</span></label>
-          <input type="text" id="f-madre" list="lista-nombres" autocomplete="off" placeholder="Nombre de la madre" value="${esc(d.madre)}">
+          <input type="text" id="f-madre" list="lista-nombres" autocomplete="off" value="${esc(d.madre)}">
         </div>
         <div class="field">
           <label for="f-padre">Padre <span class="opcional">(opcional)</span></label>
-          <input type="text" id="f-padre" list="lista-nombres" autocomplete="off" placeholder="Nombre del padre" value="${esc(d.padre)}">
+          <input type="text" id="f-padre" list="lista-nombres" autocomplete="off" value="${esc(d.padre)}">
         </div>
       </div>
       <datalist id="lista-nombres">${nombres.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
       <div class="field">
         <label for="f-notas">Notas <span class="opcional">(opcional)</span></label>
-        <textarea id="f-notas" placeholder="Señas, color, dónde se compró…">${esc(d.notas)}</textarea>
+        <textarea id="f-notas">${esc(d.notas)}</textarea>
       </div>
       <div class="btn-row">
         <button type="button" class="btn btn-secondary" onclick="cancelarForm()">Cancelar</button>
@@ -934,11 +934,11 @@ function vistaDetalle(){
         <div class="field-2col">
           <div class="field">
             <label for="e-producto">Vacuna o medicamento <span class="opcional">(opcional)</span></label>
-            <input type="text" id="e-producto" autocomplete="off" placeholder="Ej. Triple bovina, Ivermectina">
+            <input type="text" id="e-producto" autocomplete="off">
           </div>
           <div class="field">
             <label for="e-dosis">Dosis <span class="opcional">(opcional)</span></label>
-            <input type="text" id="e-dosis" autocomplete="off" placeholder="Ej. 5 ml">
+            <input type="text" id="e-dosis" autocomplete="off">
           </div>
         </div>
         <div class="field">
@@ -948,7 +948,7 @@ function vistaDetalle(){
       </div>
       <div class="field">
         <label for="e-detalle">Notas <span class="opcional">(opcional)</span></label>
-        <input type="text" id="e-detalle" autocomplete="off" placeholder="Ej. 450 kg · Se le curó la pata">
+        <input type="text" id="e-detalle" autocomplete="off">
       </div>
       <div class="btn-row">
         <button type="button" class="btn btn-secondary" onclick="toggleFormEvento(false)">Cancelar</button>
