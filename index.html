@@ -197,7 +197,15 @@
     outline:3px solid var(--accent-soft); border-color:var(--accent);
   }
   .field-2col{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  /* las columnas pueden encogerse: sin esto, la caja de fecha del iPad se
+     desborda y se encima sobre el campo de al lado */
+  .field-2col > .field{min-width:0}
+  .field-2col .field input, .field-2col .field select{max-width:100%}
   @media (max-width:560px){ .field-2col{grid-template-columns:1fr} }
+  .field input[type=date]{
+    -webkit-appearance:none; appearance:none; min-width:0;
+    display:block; text-align:left; font-family:inherit; color:var(--ink);
+  }
 
   .seg{display:flex; gap:10px}
   .seg button{
