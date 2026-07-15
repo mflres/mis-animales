@@ -374,7 +374,7 @@
 <script>
 "use strict";
 
-const VERSION = 11; // mantener igual al número de sw.js
+const VERSION = 12; // mantener igual al número de sw.js
 
 /* ============ Datos base ============ */
 const ESPECIES = [
@@ -1210,14 +1210,32 @@ document.getElementById("inputImportar").addEventListener("change", e=>{
   });
   try{
     if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
-    await abrirDB();
-    animales = await dbTodos();
+    // El iPad a veces tarda en dar acceso a la base justo al abrir la app:
+    // reintentamos varias veces con pausas antes de rendirnos.
+    let abierta = false, ultimoError = null;
+    for(let intento = 1; intento <= 6 && !abierta; intento++){
+      try{
+        await abrirDB();
+        animales = await dbTodos();
+        abierta = true;
+      }catch(e){
+        ultimoError = e;
+        await new Promise(r => setTimeout(r, 350 * intento));
+      }
+    }
+    if(!abierta) throw ultimoError;
+    // la migración de nombres viejos nunca debe impedir que la app abra
     for(const a of animales){
-      if(migrarAnimal(a)) await dbGuardar(a);
+      try{ if(migrarAnimal(a)) await dbGuardar(a); }catch(e){}
     }
   }catch(e){
     document.getElementById("app").innerHTML =
-      `<div class="empty" style="margin-top:60px"><div class="big">⚠️</div><h2>No se pudo abrir la base de datos</h2><p>Cierre la aplicación y vuelva a abrirla.</p></div>`;
+      `<div class="empty" style="margin-top:60px">
+        <div class="big">⚠️</div>
+        <h2 class="display">La memoria del aparato no respondió</h2>
+        <p>Esto pasa a veces al abrir. Toque el botón para intentar de nuevo.</p>
+        <button class="btn btn-primary" style="max-width:340px; margin:18px auto 0" onclick="location.reload()">🔄 Intentar de nuevo</button>
+      </div>`;
     return;
   }
   render();
