@@ -374,20 +374,61 @@
 <script>
 "use strict";
 
-const VERSION = 9; // mantener igual al número de sw.js
+const VERSION = 10; // mantener igual al número de sw.js
 
 /* ============ Datos base ============ */
 const ESPECIES = [
-  {id:"vaca",    nombre:"Vaca",    icono:"🐄"},
-  {id:"toro",    nombre:"Toro",    icono:"🐂"},
-  {id:"becerro", nombre:"Becerro/a", icono:"🐮"},
-  {id:"caballo", nombre:"Caballo", icono:"🐴"},
-  {id:"cabra",   nombre:"Cabra",   icono:"🐐"},
-  {id:"oveja",   nombre:"Oveja",   icono:"🐑"},
-  {id:"cerdo",   nombre:"Cerdo",   icono:"🐖"},
-  {id:"gallina", nombre:"Gallina", icono:"🐔"},
-  {id:"otro",    nombre:"Otro",    icono:"🐾"},
+  {id:"res",     nombre:"Res (ganado)",   icono:"🐄"},
+  {id:"caballo", nombre:"Caballo",        icono:"🐴"},
+  {id:"cabra",   nombre:"Cabra",          icono:"🐐"},
+  {id:"oveja",   nombre:"Oveja",          icono:"🐑"},
+  {id:"cerdo",   nombre:"Cerdo (tunco)",  icono:"🐖"},
+  {id:"gallina", nombre:"Gallina / Gallo", icono:"🐔"},
+  {id:"perro",   nombre:"Perro",          icono:"🐕"},
+  {id:"gato",    nombre:"Gato",           icono:"🐈"},
+  {id:"otro",    nombre:"Otro",           icono:"🐾"},
 ];
+
+/* Nombre del animal según su edad y sexo, con los términos usados en El Salvador.
+   "hasta" = meses de edad; la última etapa es el adulto. m=macho, h=hembra, n=sin sexo */
+const ETAPAS = {
+  res:     [{hasta:12, m:"Ternero", h:"Ternera", n:"Ternero/a"}, {hasta:36, m:"Novillo", h:"Novilla", n:"Novillo/a"}, {m:"Toro", h:"Vaca", n:"Res"}],
+  caballo: [{hasta:12, m:"Potrillo", h:"Potranca", n:"Potrillo/a"}, {hasta:36, m:"Potro", h:"Potranca", n:"Potro"}, {m:"Caballo", h:"Yegua", n:"Caballo"}],
+  cabra:   [{hasta:12, m:"Cabrito", h:"Cabrita", n:"Cabrito/a"}, {m:"Chivo", h:"Cabra", n:"Cabra"}],
+  oveja:   [{hasta:12, m:"Cordero", h:"Cordera", n:"Cordero/a"}, {m:"Carnero", h:"Oveja", n:"Oveja"}],
+  cerdo:   [{hasta:6, m:"Lechón", h:"Lechona", n:"Lechón"}, {m:"Cerdo", h:"Cerda", n:"Cerdo"}],
+  gallina: [{hasta:6, m:"Pollito", h:"Pollita", n:"Pollito/a"}, {m:"Gallo", h:"Gallina", n:"Gallina"}],
+  perro:   [{hasta:12, m:"Cachorro", h:"Cachorra", n:"Cachorro/a"}, {m:"Perro", h:"Perra", n:"Perro"}],
+  gato:    [{hasta:12, m:"Gatito", h:"Gatita", n:"Gatito/a"}, {m:"Gato", h:"Gata", n:"Gato"}],
+};
+function edadMeses(iso){
+  if(!iso) return null;
+  const nac = new Date(iso + "T00:00:00");
+  if(isNaN(nac)) return null;
+  const hoy = new Date();
+  let m = (hoy.getFullYear()-nac.getFullYear())*12 + (hoy.getMonth()-nac.getMonth());
+  if(hoy.getDate() < nac.getDate()) m--;
+  return Math.max(0, m);
+}
+function nombreEtapa(a){
+  const etapas = ETAPAS[a.especie];
+  if(!etapas) return espPor(a.especie).nombre;
+  const meses = edadMeses(a.nacimiento);
+  let etapa = etapas[etapas.length-1];
+  if(meses != null){
+    for(const e of etapas){ if(e.hasta == null || meses < e.hasta){ etapa = e; break; } }
+  }
+  return a.sexo === "macho" ? etapa.m : a.sexo === "hembra" ? etapa.h : etapa.n;
+}
+/* Datos guardados con las especies viejas (vaca/toro/becerro) pasan a "res" */
+function migrarAnimal(a){
+  const mapa = {vaca:{especie:"res", sexo:"hembra"}, toro:{especie:"res", sexo:"macho"}, becerro:{especie:"res"}};
+  const m = mapa[a.especie];
+  if(!m) return false;
+  a.especie = m.especie;
+  if(!a.sexo && m.sexo) a.sexo = m.sexo;
+  return true;
+}
 const TIPOS_EVENTO = [
   {id:"vacuna", nombre:"Vacuna",          icono:"💉", css:"vacuna"},
   {id:"despar", nombre:"Desparasitación", icono:"💊", css:"despar"},
@@ -753,7 +794,7 @@ function cardAnimal(a){
       <div class="info">
         <div class="nombre">${esc(a.nombre)}</div>
         <div class="sub">
-          <span>${e.icono} ${e.nombre}</span>
+          <span>${e.icono} ${nombreEtapa(a)}</span>
           ${a.arete ? `<span class="tag-arete">Nº ${esc(a.arete)}</span>` : ""}
           ${edad ? `<span>· ${edad}</span>` : ""}
         </div>
@@ -780,19 +821,13 @@ function setFiltro(f){
 
 /* ---------- Formulario ---------- */
 function abrirNuevo(){
-  // la especie inicial es Vaca, así que el sexo arranca en Hembra
-  estado.fotoTemp = null; estado.sexoTemp = "hembra"; estado.formDraft = null;
+  estado.fotoTemp = null; estado.sexoTemp = ""; estado.formDraft = null;
   irA("form", {editId:null});
 }
-/* El sexo se pre-selecciona según el tipo de animal (siempre se puede cambiar).
-   Becerro/a y Otro no marcan nada porque pueden ser cualquiera. */
-const SEXO_POR_ESPECIE = {
-  vaca:"hembra", toro:"macho", caballo:"macho",
-  cabra:"hembra", oveja:"hembra", cerdo:"macho", gallina:"hembra",
-};
+/* Ahora el sexo decide el nombre (Vaca o Toro, Gallina o Gallo…),
+   así que ya no se marca solo: se elige y el nombre sale correcto. */
 function cambioEspecie(v){
   estado.formDraft = {...(estado.formDraft||{}), ...leerForm()};
-  if(SEXO_POR_ESPECIE[v]) estado.sexoTemp = SEXO_POR_ESPECIE[v];
   render();
 }
 function abrirEditar(id){
@@ -1004,7 +1039,7 @@ function vistaDetalle(){
     <div class="hero">${foto}</div>
     <div class="detalle-head"><h2>${esc(a.nombre)}</h2></div>
     <div class="badges">
-      <span class="badge">${e.icono} ${e.nombre}</span>
+      <span class="badge">${e.icono} ${nombreEtapa(a)}</span>
       ${a.sexo ? `<span class="badge neutro">${a.sexo === "hembra" ? "♀ Hembra" : "♂ Macho"}</span>` : ""}
       ${edad ? `<span class="badge ochre">${edad}</span>` : ""}
     </div>
@@ -1115,6 +1150,7 @@ async function importar(file){
   let nuevos = 0, actualizados = 0;
   for(const a of datos.animales){
     if(!a || !a.id || !a.nombre) continue;
+    migrarAnimal(a);
     const existe = animales.some(x=>x.id===a.id);
     await dbGuardar(a);
     const i = animales.findIndex(x=>x.id===a.id);
@@ -1163,6 +1199,9 @@ document.getElementById("inputImportar").addEventListener("change", e=>{
     if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
     await abrirDB();
     animales = await dbTodos();
+    for(const a of animales){
+      if(migrarAnimal(a)) await dbGuardar(a);
+    }
   }catch(e){
     document.getElementById("app").innerHTML =
       `<div class="empty" style="margin-top:60px"><div class="big">⚠️</div><h2>No se pudo abrir la base de datos</h2><p>Cierre la aplicación y vuelva a abrirla.</p></div>`;
