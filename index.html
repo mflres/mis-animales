@@ -374,7 +374,7 @@
 <script>
 "use strict";
 
-const VERSION = 10; // mantener igual al número de sw.js
+const VERSION = 11; // mantener igual al número de sw.js
 
 /* ============ Datos base ============ */
 const ESPECIES = [
@@ -420,6 +420,19 @@ function nombreEtapa(a){
   }
   return a.sexo === "macho" ? etapa.m : a.sexo === "hembra" ? etapa.h : etapa.n;
 }
+/* Los botones de sexo muestran el nombre real: "Ternera" y "Ternero",
+   no solo Hembra/Macho, según la especie y la fecha de nacimiento */
+function etiquetasSexo(especie, nacimiento){
+  const etapas = ETAPAS[especie];
+  if(!etapas) return {h:"Hembra", m:"Macho"};
+  const meses = edadMeses(nacimiento);
+  let etapa = etapas[etapas.length-1];
+  if(meses != null){
+    for(const e of etapas){ if(e.hasta == null || meses < e.hasta){ etapa = e; break; } }
+  }
+  return {h: etapa.h, m: etapa.m};
+}
+
 /* Datos guardados con las especies viejas (vaca/toro/becerro) pasan a "res" */
 function migrarAnimal(a){
   const mapa = {vaca:{especie:"res", sexo:"hembra"}, toro:{especie:"res", sexo:"macho"}, becerro:{especie:"res"}};
@@ -870,16 +883,16 @@ function vistaForm(){
         </div>
       </div>
       <div class="field">
-        <label>Sexo <span class="opcional">(opcional)</span></label>
+        <label>¿Qué es? <span class="opcional">(opcional)</span></label>
         <div class="seg">
-          <button type="button" class="${estado.sexoTemp==="hembra"?"on":""}" onclick="setSexo('hembra')">♀ Hembra</button>
-          <button type="button" class="${estado.sexoTemp==="macho"?"on":""}" onclick="setSexo('macho')">♂ Macho</button>
+          <button type="button" class="${estado.sexoTemp==="hembra"?"on":""}" onclick="setSexo('hembra')">♀ ${etiquetasSexo(d.especie || "res", d.nacimiento).h}</button>
+          <button type="button" class="${estado.sexoTemp==="macho"?"on":""}" onclick="setSexo('macho')">♂ ${etiquetasSexo(d.especie || "res", d.nacimiento).m}</button>
         </div>
       </div>
       <div class="field-2col">
         <div class="field">
           <label for="f-nacimiento">Nacimiento <span class="opcional">(opcional)</span></label>
-          <input type="date" id="f-nacimiento" value="${esc(d.nacimiento)}">
+          <input type="date" id="f-nacimiento" value="${esc(d.nacimiento)}" onchange="cambioEspecie()">
         </div>
         <div class="field">
           <label for="f-raza">Raza <span class="opcional">(opcional)</span></label>
