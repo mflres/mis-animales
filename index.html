@@ -374,7 +374,7 @@
 <script>
 "use strict";
 
-const VERSION = 12; // mantener igual al número de sw.js
+const VERSION = 13; // mantener igual al número de sw.js
 
 /* ============ Datos base ============ */
 const ESPECIES = [
@@ -438,8 +438,17 @@ function migrarAnimal(a){
   const mapa = {vaca:{especie:"res", sexo:"hembra"}, toro:{especie:"res", sexo:"macho"}, becerro:{especie:"res"}};
   const m = mapa[a.especie];
   if(!m) return false;
+  const eraBecerro = a.especie === "becerro";
   a.especie = m.especie;
   if(!a.sexo && m.sexo) a.sexo = m.sexo;
+  /* Un becerro sin fecha de nacimiento quedaría como "Vaca"/"Toro" adulto.
+     Le ponemos ~6 meses de edad (aproximado) para que siga siendo ternero/a,
+     y lo anotamos para que se pueda corregir la fecha real. */
+  if(eraBecerro && !a.nacimiento){
+    const d = new Date(); d.setMonth(d.getMonth() - 6);
+    a.nacimiento = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    a.notas = (a.notas ? a.notas + "\n" : "") + "⚠️ Nacimiento aproximado (lo puso la app al actualizar). Corrija la fecha si la sabe.";
+  }
   return true;
 }
 const TIPOS_EVENTO = [
